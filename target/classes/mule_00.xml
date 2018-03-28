@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:smtps="http://www.mulesoft.org/schema/mule/smtps" xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp" xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/smtps http://www.mulesoft.org/schema/mule/smtps/current/mule-smtps.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="8081" basePath="demo" doc:name="HTTP Listener Configuration"/>
+    <smtp:connector name="SMTP" contentType="text/plain" fromAddress="mhousema@ix.netcom.com" subject="Test" validateConnections="true" doc:name="SMTP">
+        <reconnect/>
+    </smtp:connector>
+    <flow name="mule_00Flow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/employee" doc:name="HTTP"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <logger message="Received Request #[payload]" level="INFO" doc:name="Logger"/>
+        <json:json-to-xml-transformer doc:name="JSON to XML"/>
+        <logger message="After transform: #[payload]" level="INFO" doc:name="Logger"/>
+        <smtp:outbound-endpoint host="email-smtp.us-east-1.amazonaws.com" user="AKIAIWMS6L3GQYP2A42A" password="AkrqMfmYrDoZyya0qPvuSvblAZKIURGocoPuOpWNvEcj" connector-ref="SMTP" to="mahousem@ucsc.edu" from="mhousema@ix.netcom.com" subject="Test from MuleSoft" responseTimeout="10000" doc:name="SMTP"/>
+    </flow>
+</mule>
